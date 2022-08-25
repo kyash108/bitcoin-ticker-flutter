@@ -11,28 +11,34 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
 
-  String apiKey = "/?apikey=379BEA23-64D3-49F1-9BE3-81DD4280B1D8";
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getDataBtc();
+    getDataLtc();
+    getDataEth();
+  }
+  String apiKey = "/?apikey= B82FCA1C-6034-4A75-9DD9-6DD11B0845A4";
   // https://rest.coinapi.io/v1/exchangerate/BTC/USD/?apikey=379BEA23-64D3-49F1-9BE3-81DD4280B1D8
   String selectedCurrency = 'USD';
   String hashString = '/';
   String crypBtc = 'BTC';
   String crypEth = 'ETH';
   String crypLtc = 'LTC';
-  var btcValue;
-  var ethValue;
-  var ltcValue;
+  var btcValue = 0.0;
+  var ethValue = 0.0;
+  var ltcValue = 0.0;
 
   getDataBtc() async {
     String apiUrl = "https://rest.coinapi.io/v1/exchangerate/";
-    var response = await http.get(Uri.parse('https://rest.coinapi.io/v1/exchangerate/BTC/USD/?apikey=379BEA23-64D3-49F1-9BE3-81DD4280B1D8'));
-    // var response = await http.get(Uri.parse(apiUrl+crypBtc+hashString+selectedCurrency+apiKey));
+    var response = await http.get(Uri.parse(apiUrl+crypBtc+hashString+selectedCurrency+apiKey));
     var jsonData = jsonDecode(response.body);
     btcValue = jsonData["rate"];
-    return print(jsonData);
+    return btcValue;
   }
   getDataEth() async {
     String apiUrl = "https://rest.coinapi.io/v1/exchangerate/";
-    // var response = await http.get(Uri.parse('https://rest.coinapi.io/v1/exchangerate/BTC/USD/?apikey=379BEA23-64D3-49F1-9BE3-81DD4280B1D8'));
     var response = await http.get(Uri.parse(apiUrl+crypEth+hashString+selectedCurrency+apiKey));
     var jsonData = jsonDecode(response.body);
     ethValue = jsonData["rate"];
@@ -40,7 +46,6 @@ class _PriceScreenState extends State<PriceScreen> {
   }
   getDataLtc() async {
     String apiUrl = "https://rest.coinapi.io/v1/exchangerate/";
-    // var response = await http.get(Uri.parse('https://rest.coinapi.io/v1/exchangerate/BTC/USD/?apikey=379BEA23-64D3-49F1-9BE3-81DD4280B1D8'));
     var response = await http.get(Uri.parse(apiUrl+crypLtc+hashString+selectedCurrency+apiKey));
     var jsonData = jsonDecode(response.body);
     ltcValue = jsonData["rate"];
@@ -69,6 +74,9 @@ class _PriceScreenState extends State<PriceScreen> {
       onSelectedItemChanged: (selectedIndex){
         setState(() {
           selectedCurrency = currenciesList[selectedIndex];
+          getDataBtc();
+          getDataLtc();
+          getDataEth();
         });
       },
       children: getDropDownItems(),
@@ -77,7 +85,6 @@ class _PriceScreenState extends State<PriceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    getDataBtc();
     return Scaffold(
       appBar: AppBar(
         title: Text('🤑 Coin Ticker'),
